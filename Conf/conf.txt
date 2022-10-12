@@ -1,0 +1,1 @@
+this folder will contain specific configurations file with like nginx and php if required, if the specific configurations aren't requried the folder can be left empty with a .gitkeep file just to be sure.

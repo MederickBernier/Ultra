@@ -1,0 +1,81 @@
+this folder will contain the folder and file structure for the new projects
+
+requirements
+
+Sapper aka Sveltekit
+Nginx
+SlimPhp
+Redis
+Redis-Commander
+Mysql
+Phpmyadmin
+Vite
+Composer
+Directus
+PHP 8.1
+
+So each sub-system will have his own dockerfile and the docker-compose.yml will build all of them based on requirements.
+
+gotta have to look into dynamic requirements for docker, if it's even possible. 
+
+########################################################################################################################
+
+Folder structure
+
+App => Slim
+Nginx
+Data/Mysql => Mysql
+Data/Redis => Redis
+Vite
+Directus
+Sapper
+Tests/Unit
+Tests/Integration
+
+########################################################################################################################
+
+Naming Convention and PSR compliance
+
+PSR-1:
+
+
+    Only <?php or <?= are allowed for PHP tags.
+    Class names must be defined in UpperCamelCase.
+    Class variables must be defined in camelCase.
+    Class constants must be defined in UPPER_SNAKE_CASE.
+    Method names must be defined in camelCase.
+    Files SHOULD either declare symbols (classes, functions, constants, etc.)  or cause side effects(e.g. generate output, change .ini settings, etc.) but SHOULD NOT do both. I.e.,    
+    Files must be in UTF-8 without BOM(Byte Order Mark).
+    Namespaces and class names must follow the standards in PSR-0 and PSR-4.
+
+
+PSR-2:
+
+
+    You must follow the PSR-1 coding standards.
+    4 spaces must be used for indents. Using tabs is not allowed.
+    There is no limit to line length, but it should be under 120 characters, and best if under 80.
+    There must be one blank line after namespace declaration and there must be one blank line after the block of use declaration.
+    Opening curly braces for classes and methods must go on the next line and closing curly braces must go on the line after the body.
+    Methods and properties must be defined with abstract/final first, followed with public/protected, and finally static keyword.
+    You must not put a newline before curly braces in conditional statements.
+    You must not put any spaces before ( and ) in conditional statements.
+    An example for defining classes:
+    You must open the curly braces on the new line and the extends and the implements keyword must be used in a single line.
+
+    Conditional Statements:
+    
+    You must put one whitespace before (
+    You must not put any whitespaces after (
+    You must not put any whitespaces before )
+    You must put one whitespace after )
+    use elseif rather than else if.
+
+    Switch statements: 
+    
+    The curly braces must be opened in the same line where the switch statement is written.
+    The case body must be indented once from the case and the case must be indented once from the switch.
+    Use no break when break is not needed.
+    You can also use return instead of break.
+
+    

@@ -1,0 +1,17 @@
+{
+    "name": "sudo/ultra",
+    "description": "Base system for web development, containing multiple requirements",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Mederick Bernier",
+            "email": "mederick@agencesudo.ca"
+        }
+    ],
+    "require": {},
+    "autoload":{
+        "psr-4":{
+            "Ultra\\Foundation\\" : "Ultra"
+        }
+    }
+}
