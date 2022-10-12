@@ -1,0 +1,7 @@
+FROM php:8.1-fpm
+
+WORKDIR /var/www/stats
+COPY . /var/www/stats
+COPY ./config/php.ini /usr/local/etc/php/php.ini
+
+CMD ["php-fpm"]

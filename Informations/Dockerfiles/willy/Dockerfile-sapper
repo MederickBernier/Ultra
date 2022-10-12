@@ -1,0 +1,35 @@
+## Stage 1 (production base)
+# This gets our prod dependencies installed and out of the way
+FROM node:12.14.1-slim as base
+
+WORKDIR /node
+
+COPY package.json package-lock*.json ./
+
+RUN npm install
+
+## Stage 2 (development) -----------------------------------------------
+
+FROM base as dev
+
+ENV NODE_ENV=development
+
+ENV PATH=/node/node_modules/.bin:$PATH
+
+WORKDIR /node/app
+
+CMD ["npm", "run", "dev"]
+
+## Stage 3 (copy in source for prod) -------------------------------------
+FROM base as prod
+
+WORKDIR /node/app
+
+COPY . .
+
+RUN ../node_modules/.bin/sapper build
+
+ENV NODE_ENV=production
+
+CMD ["node", "__sapper__/build"]
+

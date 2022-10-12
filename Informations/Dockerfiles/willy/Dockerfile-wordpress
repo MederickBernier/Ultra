@@ -1,0 +1,24 @@
+FROM wordpress:php8.0-fpm as base
+
+# Add entrypoint permissions
+COPY ./docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Copy php ini configurations
+COPY ./config/php.ini /usr/local/etc/php/php.ini
+COPY ./config/www.conf /usr/local/etc/php-fpm.d/www.conf
+
+# Copy the contents of the bind mount to /html
+# most files will be overwritten by bind mount,
+# but it makes the build easier to understand (and faster).
+COPY . /var/www/html
+
+# Make sure uploads, plugins and cache folder exist
+RUN mkdir -p web/app/uploads
+RUN mkdir -p web/app/plugins
+RUN mkdir -p web/app/cache
+RUN mkdir -p web/app/languages
+
+# We use entrypoint script here because this image
+# needs to boot NGINX and PHP-FPM. (NGINX is required to serve php)
+ENTRYPOINT ["/docker-entrypoint.sh"]

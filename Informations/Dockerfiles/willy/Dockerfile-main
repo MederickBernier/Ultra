@@ -1,0 +1,6 @@
+FROM staticfloat/nginx-certbot
+
+COPY ./wordpress /var/www/html
+COPY ./stats-api /var/www/stats
+
+CMD ["/bin/bash", "/scripts/entrypoint.sh"]

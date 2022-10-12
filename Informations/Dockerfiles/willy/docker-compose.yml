@@ -1,0 +1,191 @@
+version: '3.4'
+
+services:
+  # SERVICES LAYER ------------------------------------------------------------#
+  sapper:
+    command: /node/node_modules/.bin/sapper dev
+    build: 
+      context: ./sapper
+      dockerfile: Dockerfile
+      target: dev
+    environment:
+      NODE_ENV: development
+      DOMAIN: "http://wp.localhost"
+      STRIPE_PRIVATE_KEY: ${STRIPE_PRIVATE_KEY}
+    volumes:
+      - ./sapper:/node/app
+      - /node/app/node_modules
+    ports:
+      - 3000:3000
+
+  dashboard:
+    command: /node/node_modules/.bin/sapper dev
+    build: 
+      context: ./dashboard
+      dockerfile: Dockerfile
+      target: dev
+    environment:
+      NODE_ENV: development
+    volumes:
+      - ./dashboard:/node/app
+      - /node/app/node_modules
+    ports:
+      - 10000:10000
+    
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      target: dev
+    environment: 
+      DOMAIN: ${DOMAIN}
+      CDN_SUBDOMAIN: ${CDN_SUBDOMAIN}
+      SAPPER_SUBDOMAIN: ${SAPPER_SUBDOMAIN}
+      VITE_SUBDOMAIN: ${VITE_SUBDOMAIN}
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/dev:/etc/nginx/templates
+      - ./wordpress:/var/www/html:rw,cached
+      - ./stats-api:/var/www/stats:rw,cached
+      - ./vite:/var/www/static:rw,cached
+      - ./vite/public:/var/www/public:rw,cached
+      - ./vite/guide:/var/www/guide:rw,cached
+      - ./vite/super:/var/www/super:rw,cached
+    depends_on:
+      - wordpress
+
+  stats:
+    build:
+      context: ./stats-api
+    ports:
+      - 9000:9000
+    volumes:
+      - ./stats-api:/var/www/stats
+      - ./stats-api/config/php.ini:/usr/local/etc/php/conf.d/php.ini
+    environment:
+      ENV: development
+      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
+      SENDGRID_FROM: ${SENDGRID_FROM}
+      NAME_FROM: ${NAME_FROM}
+      EMAIL_TO: ${EMAIL_TO}
+      NAME_TO: ${NAME_TO}
+      WILLY_DASHBOARD_URL: http://dash.localhost
+      WILLY_PUBLIC_SHOP_URL: http://localhost
+      WP_ADMIN_URL: http://wp.localhost/wp/wp-admin
+      MICHAUD_ADMIN_SECRET: MeH3MfssK7dWhFk
+      MICHAUD_ADMIN_EMAIL: nado.des@gmail.com
+      WILLY_LOGO_URL: ${WILLY_LOGO_URL}
+      MICHAUD_LOGO_URL: ${MICHAUD_LOGO_URL}
+
+  wordpress:
+    build:
+      context: ./wordpress
+      dockerfile: Dockerfile
+    volumes:
+      - ./wordpress:/var/www/html:rw,cached
+      - ./wordpress/config/php.ini:/usr/local/etc/php/conf.d/php.ini
+    depends_on:
+      - mysql
+    environment:
+      DB_NAME: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      DB_HOST: ${MYSQL_HOST}
+      WP_ENV: ${ENVIRONMENT}
+      STRIPE_API_KEY: ${STRIPE_API_KEY}
+      DISABLE_WP_CRON: ${DISABLE_WP_CRON}
+      DB_PREFIX: ${MYSQL_PREFIX}
+      WP_HOME: ${PROTOCOL}://wp.${DOMAIN}
+      WP_SITEURL: ${PROTOCOL}://wp.${DOMAIN}/wp
+      CDN_URL: ${PROTOCOL}://${CDN_SUBDOMAIN}.${DOMAIN}
+      WP_DEFAULT_THEME: ${DEFAULT_THEME}
+      WP_DEBUG_LOG: /log/debug.log
+      AUTH_KEY: ${AUTH_KEY_BASE}
+      SECURE_AUTH_KEY: ${AUTH_KEY_BASE}
+      LOGGED_IN_KEY: ${AUTH_KEY_BASE}
+      NONCE_KEY: ${AUTH_KEY_BASE}
+      AUTH_SALT: ${AUTH_KEY_BASE}
+      SECURE_AUTH_SALT: ${AUTH_KEY_BASE}
+      LOGGED_IN_SALT: ${AUTH_KEY_BASE}
+      NONCE_SALT: ${AUTH_KEY_BASE}
+
+  worker:
+    command: /node/node_modules/.bin/nodemon
+    environment: 
+      NODE_ENV: ${ENVIRONMENT}
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    volumes:
+      - ./worker:/node/app
+      - /node/app/node_modules
+    ports:
+      - "9229:9229"
+
+  redis:
+    image: 'redis:5-alpine'
+    volumes:
+      - ./data/redis:/data
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: rediscommander/redis-commander:latest
+    environment:
+      REDIS_HOSTS: redis
+      HTTP_USER: app
+      HTTP_PASSWORD: app
+      CLIENT_MAX_BODY_SIZE: 99999999999999999999
+    ports:
+        - 8081:8081
+
+  # DATA LAYER ----------------------------------------------------------------#
+
+  mysql:
+    image: 'mysql:5.7.30'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - 3306
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+
+  # TOOLING LAYER -------------------------------------------------------------#
+
+  vite:
+    build: 
+      context: ./vite
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - /node/app/node_modules
+      - ./vite:/node/app
+    ports:
+      - 3030:3030
+
+  # composer:
+  #    image: composer
+  #    container_name: wordpress-composer
+  #    working_dir: /var/www/html
+  #    restart: 'no'
+  #    volumes:
+  #      - ./stats-api:/var/www/html:rw,cached
+
+  # docker-compose run composer composer require tonpaquet/lepath
+  # docker-compose build stats
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mysql
+    ports:
+      - 8080:80
+    environment:
+      PMA_ABSOLUTE_URI: http://localhost/
+      PMA_HOST: ${MYSQL_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      UPLOAD_LIMIT: 100M
