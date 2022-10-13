@@ -39,15 +39,15 @@ class Bootstrap{
   #region Configurators
 
   protected function twig_configurator(){
-
+    
   }
   
   protected function slim_configurator(){
-
+     
   }
 
   protected function directus_configurator(){
-
+    
   }
 
   protected function redis_configurator(){
