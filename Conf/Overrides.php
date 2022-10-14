@@ -53,39 +53,47 @@ class Overrides{
 #    "PARAMETERS" => "",
 #    "COMMANDS" => "",
   ];
-
+  
+  
+  public static function is_in($module, $key, $default = null){
+    if(method_exists(Overrides::class, $module)){
+      $method = "is_in_".$module;
+      Overrides::$method($key, $default);
+    }
+  }
+  
   public static function is_in_twig($key, $default = null){
     if(in_array(strtoupper($key), Overrides::$twig_overrides)){
       return Overrides::$twig_overrides[strtoupper($key)];
     }else{
-      if(is_null($default)) return null;
+      if(is_null($default)) return;
       return $default;
     }
   }
 
-  public static function is_in_slim($key, $default = null){
+  protected static function is_in_slim($key, $default = null){
     if(in_array(strtoupper($key), Overrides::$slim_overrides)){
       return Overrides::$slim_overrides[strtoupper($key)];
     }else{
-      if(is_null($default)) return null;
+      if(is_null($default)) return;
       return $default;
     }
   }
 
-  public static function is_in_directus($key, $default = null){
+  protected static function is_in_directus($key, $default = null){
     if(in_array(strtoupper($key), Overrides::$directus_overrides)){
       return Overrides::$directus_overrides[strtoupper($key)];
     }else{
-      if(is_null($default)) return null;
+      if(is_null($default)) return;
       return $default;
     }
   }
 
-  public static function is_in_redis($key, $default = null){
+  protected static function is_in_redis($key, $default = null){
     if(in_array(strtoupper($key), Overrides::$redis_overrides)){
       return Overrides::$redis_overrides[strtoupper($key)];
     }else{
-      if(is_null($default)) return null;
+      if(is_null($default)) return;
       return $default;
     }
   }

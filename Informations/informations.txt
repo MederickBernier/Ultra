@@ -13,6 +13,8 @@ Vite
 Composer
 Directus
 PHP 8.1
+PHP-DI
+PHPUnit (with custom standalone console command)
 
 So each sub-system will have his own dockerfile and the docker-compose.yml will build all of them based on requirements.
 

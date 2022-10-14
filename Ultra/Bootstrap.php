@@ -2,12 +2,11 @@
 
 namespace Ultra\Foundation;
 
-use Conf\Overrides;
-
 class Bootstrap{
 
   // this class will start and create all system required and set them as a singleton or something else to be available
   // application-wide without having to create a new instance.
+  // might have to check for something else than a singleton since it's considered an anti-pattern
 
   public function __construct(){
     $this->directus_constructor();
