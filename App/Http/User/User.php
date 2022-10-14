@@ -1,6 +1,8 @@
 <?php
 namespace App\Model;
 
-class User extends \Ultra\Foundation\Model{
+use Ultra\Foundation\Model as Model;
+
+class User extends Model{
   
 }

@@ -2,6 +2,8 @@
 
 namespace App\Controllers;
 
-class UserController extends \Ultra\Foundation\Controller{
+use Ultra\Foundation\Controller as Controller;
+
+class UserController extends Controller{
   
 }

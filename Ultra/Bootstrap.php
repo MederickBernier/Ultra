@@ -8,6 +8,18 @@ class Bootstrap{
   // application-wide without having to create a new instance.
   // might have to check for something else than a singleton since it's considered an anti-pattern
 
+  #region Properties
+  
+  // will need to find a way without using globals to make all those properties available at all times 
+  // within the full scope of the application
+
+  public $twig;
+  public $slim;
+  public $directus;
+  public $redis;
+  
+  #endregion
+
   public function __construct(){
     $this->directus_constructor();
     $this->slim_constructor();
@@ -18,19 +30,19 @@ class Bootstrap{
   #region Constructors
 
   protected function twig_constructor(){
-    $configs = $this->twig_configurator();
+    $this->twig = $this->twig_configurator();
   }
 
   protected function slim_constructor(){
-    $configs = $this->slim_configurator();
+    $this->slim = $this->slim_configurator();
   }
 
   protected function directus_constructor(){
-    $configs = $this->directus_configurator();
+    $this->directus = $this->directus_configurator();
   }
 
   protected function redis_constructor(){
-    $configs = $this->redis_configurator();
+    $this->redis = $this->redis_configurator();
   }
 
   #endregion
