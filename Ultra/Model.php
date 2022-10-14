@@ -2,6 +2,6 @@
 
 namespace Ultra\Foundation;
 
-class Model{
-  
+class Model
+{
 }
