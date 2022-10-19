@@ -1,0 +1,114 @@
+version: '3.4'
+
+services:
+  mysql:
+    image: 'mysql:5.7.30'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: root
+    ports:
+      - 3306
+    volumes:
+      - ./Data/mysql:/var/lib/mysql
+  
+  vite:
+    build:
+      context: ./Vite
+      dockerfile: Dockerfile
+      target: dev
+    volumes:
+      - /node/app/node_modules
+      - ./Vite:/node/app
+    ports:
+      - 3030:3030
+  
+  cache:
+    image: redis:6
+  
+  directus:
+    image: directus/directus:latest
+    ports:
+      -8055:8055
+    volumes:
+      - ./Data/uploads:/directus/uploads
+      - ./Data/snapshots:/directus/snapshots
+    depends_on:
+      - cache
+      - mysql
+    
+    environment:
+      KEY: '255d861b-5ea1-5996-9aa3-922530ec40b1'
+      SECRET: '6116487b-cda1-52c2-b5b5-c8022c45e263'
+
+      DB_CLIENT: 'mysql'
+      DB_HOST: 'mysql'
+      DB_PORT: '3306'
+      DB_DATABASE: app
+      DB_USER: app
+      DB_PASSWORD: root
+
+      CACHE_ENABLED: 'true'
+      CACHE_AUTO_PURGE: 'true'
+      CACHE_STORE: 'redis'
+      CACHE_REDIS: 'redis://cache:6379'
+
+      CORS_ENABLED: 'true'
+
+      ADMIN_EMAIL: 'app@app.com'
+      ADMIN_PASSWORD: 'app'
+    
+    depends_on:
+      - mysql
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mysql
+    ports:
+      - 8080:8080
+    environment:
+      PMA_ABSOLUTE_URI: http://localhost
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
+      UPLOAD_LIMIT: 100M
+  
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+      target: dev
+    environment:
+      DOMAIN: localhost
+    ports:
+      - 80:80
+    volumes:
+      - ./Nginx/dev:/etc/nginx/templates
+      - ./vite:/var/www/static:rw,cached
+      - ./vite/public:/var/www/public:rw,cached
+    depends_on:
+      - mysql
+      - directus
+      - phpmyadmin
+      - vite
+  
+  web:
+    command: /node/node_modules/.bin/nodemon
+    environment:
+      NODE_ENV: development
+      DIRECTUS_TOKEN: development_token_dont_use_in_production
+      CDN_URL: http://static.localhost
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    volumes:
+      - ./web:/node/app
+      - /node/app/node_modules
+    ports:
+      - 3000:3000
+      - 35729:35729
+    depends_on:
+      -directus
+  
+  

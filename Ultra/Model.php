@@ -4,4 +4,5 @@ namespace Ultra\Foundation;
 
 class Model
 {
+  
 }
