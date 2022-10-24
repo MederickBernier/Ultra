@@ -57,18 +57,22 @@ class Bootstrap
 
   protected function twig_configurator()
   {
+    // here we will start the twig and set it to be available application wide (probably with the dependency injection container)
   }
 
   protected function slim_configurator()
   {
+    // here we will start the slim and set it to be available application wide (probably with the dependency injection container)
   }
 
   protected function directus_configurator()
   {
+    // here we will start the directus and set it to be available application wide (probably with the dependency injection container)
   }
 
   protected function redis_configurator()
   {
+    // here we will start the redis and set it to be available application wide (probably with the dependency injection container)    
   }
 
   #endregion

@@ -62,7 +62,7 @@ class Overrides
     }
   }
 
-  public static function is_in_twig($key, $default = null)
+  private static function is_in_twig($key, $default = null)
   {
     if (in_array(strtoupper($key), Overrides::$twig_overrides)) {
       return Overrides::$twig_overrides[strtoupper($key)];
@@ -72,7 +72,7 @@ class Overrides
     }
   }
 
-  protected static function is_in_slim($key, $default = null)
+  private static function is_in_slim($key, $default = null)
   {
     if (in_array(strtoupper($key), Overrides::$slim_overrides)) {
       return Overrides::$slim_overrides[strtoupper($key)];
@@ -82,7 +82,7 @@ class Overrides
     }
   }
 
-  protected static function is_in_directus($key, $default = null)
+  private static function is_in_directus($key, $default = null)
   {
     if (in_array(strtoupper($key), Overrides::$directus_overrides)) {
       return Overrides::$directus_overrides[strtoupper($key)];
@@ -92,7 +92,7 @@ class Overrides
     }
   }
 
-  protected static function is_in_redis($key, $default = null)
+  private static function is_in_redis($key, $default = null)
   {
     if (in_array(strtoupper($key), Overrides::$redis_overrides)) {
       return Overrides::$redis_overrides[strtoupper($key)];
