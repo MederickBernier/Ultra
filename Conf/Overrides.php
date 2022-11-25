@@ -58,7 +58,7 @@ class Overrides
   {
     if (method_exists(Overrides::class, $module)) {
       $method = "is_in_" . $module;
-      Overrides::$method($key, $default);
+      return Overrides::$method($key, $default);
     }
   }
 
