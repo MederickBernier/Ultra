@@ -1,3 +1,21 @@
 this part will contain everything that needs to be done for hooking the backend together, so it'll be easy to handle for new programmers
 
 will manage with Guzzle for async configurations
+
+
+User management (login - logout - sessions)
+Notification system (email - sms - others flash - desktop notifications)
+Validation (required - length)
+Security (xss and other script issues, middlewares to protect against bruteforce)
+Database ORM
+Api
+Monitoring (logging, error handling, ads logging, statistics)
+Error handling and managing (custom catcher)
+Unit testing
+Management of volumes (crop images, uploads, downloads, backups, and image management)
+CI/CD pipeline deployment (docker integration)
+Migrations and database (artisan)
+Caching (Memcache - Redis)
+
+
+Custom CLI (last thing on earth to do)
